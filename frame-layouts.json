@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "coordinateSpace": "normalized-0-to-1",
+  "frames": {},
+  "slotSchema": {
+    "x": "left position as a fraction of canvas width",
+    "y": "top position as a fraction of canvas height",
+    "width": "slot width as a fraction of canvas width",
+    "height": "slot height as a fraction of canvas height",
+    "rotation": "optional degrees clockwise",
+    "radius": "optional corner radius as a fraction of the shorter canvas dimension"
+  }
+}

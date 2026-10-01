@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CLICKBAIT Creator — Design Prototype</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Caveat:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,600&family=Bungee&family=Anton&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap">
+<style>
+:root{--tb-w:96px;--drawer-w:320px;--topbar-h:70px;--switcher-h:54px;--mobile-bar-h:64px;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"DM Sans",sans-serif;background:#e7e2df;overflow-x:hidden;}
+html{overflow-x:hidden;}
+button{font-family:inherit;}
+svg.ic{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ---------- world switcher ---------- */
+.world-switcher{height:var(--switcher-h);display:flex;align-items:center;gap:8px;padding:0 20px;background:#1d1a20;overflow-x:auto;}
+.world-switcher button{font-size:12px;font-weight:600;color:#cfc9cf;background:transparent;border:1.5px solid #45404a;border-radius:20px;padding:7px 13px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.world-switcher button.active{color:#1d1a20;border-color:transparent;}
+.ws-pastel.active{background:#f5aeca;} .ws-y2k.active{background:#5b9bd5;} .ws-nineties.active{background:#e6c95d;}
+.ws-grunge.active{background:#c25770;} .ws-shoujo.active{background:#e79cb0;} .ws-floral.active{background:#93b58a;}
+
+/* ---------- shell ---------- */
+.editor-shell{display:flex;flex-direction:column;min-height:860px;background:var(--bg);}
+.topbar{height:var(--topbar-h);display:flex;align-items:center;gap:14px;padding:0 20px;background:var(--topbar-bg);border-bottom:var(--chrome-border);flex:none;}
+.topbar .brand{display:flex;flex-direction:column;line-height:1.1;}
+.topbar .brand b{font-family:var(--font-head);font-weight:800;font-size:17px;color:var(--logo-color);}
+.topbar .brand span{font-family:var(--font-head);font-size:11px;font-weight:700;color:var(--accent-strong);}
+.icon-btn{width:38px;height:38px;border-radius:11px;background:var(--btn-bg);color:var(--btn-text);border:var(--btn-border);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.icon-btn[disabled]{opacity:.35;cursor:not-allowed;}
+.topbar .spacer{flex:1;}
+.pill-btn{font-size:12.5px;font-weight:700;padding:9px 16px;border-radius:20px;background:var(--btn-bg);color:var(--btn-text);border:var(--btn-border);cursor:pointer;display:flex;align-items:center;gap:6px;}
+.pill-btn.primary{background:var(--accent-strong);color:var(--on-accent);border-color:var(--accent-strong);}
+.tb-group{display:flex;align-items:center;gap:8px;}
+
+.editor-body{flex:1;display:flex;min-height:0;position:relative;}
+
+/* ---------- left toolbar ---------- */
+.toolbar{width:var(--tb-w);flex:none;background:var(--toolbar-bg);border-right:var(--chrome-border);display:flex;flex-direction:column;align-items:center;padding:14px 8px;gap:6px;overflow-y:auto;}
+.tool-btn{width:100%;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(--tool-bg);color:var(--tool-text);border:var(--tool-border);border-radius:var(--tool-radius);cursor:pointer;position:relative;}
+.tool-btn svg{width:19px;height:19px;}
+.tool-btn small{font-size:9px;font-weight:700;}
+.tool-btn:hover{filter:brightness(.97);}
+.tool-btn.active{background:var(--accent-strong);color:var(--on-accent);border-color:var(--accent-strong);}
+.tool-btn[disabled]{opacity:.4;cursor:not-allowed;}
+.tool-sep{width:60%;height:1px;background:var(--tool-sep);margin:6px 0;}
+
+/* ---------- drawer ---------- */
+.drawer{width:0;flex:none;overflow:hidden;background:var(--drawer-bg);border-right:var(--chrome-border);transition:width .18s;}
+.drawer.open{width:var(--drawer-w);}
+.drawer-inner{width:var(--drawer-w);padding:16px;height:100%;overflow-y:auto;}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.drawer-head h3{font-family:var(--font-head);font-size:15px;margin:0;color:var(--ink);}
+.drawer-head button{background:none;border:none;font-size:16px;cursor:pointer;color:var(--ink);}
+.drawer-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.drawer-tabs button{font-size:10px;font-weight:700;padding:6px 10px;border-radius:14px;background:var(--card-bg);color:var(--card-text);border:var(--card-border);cursor:pointer;}
+.drawer-tabs button.active{background:var(--accent-strong);color:var(--on-accent);border-color:var(--accent-strong);}
+.drawer-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.g-card{background:var(--card-bg);border:var(--card-border);border-radius:var(--card-radius);padding:10px;text-align:center;cursor:pointer;}
+.g-card .prev{height:54px;display:flex;align-items:center;justify-content:center;gap:3px;position:relative;}
+.slot{background:rgba(0,0,0,.07);border:1px dashed var(--card-text);border-radius:4px;}
+.g-card label{font-size:9.5px;font-weight:700;color:var(--card-text);line-height:1.25;display:block;margin-top:4px;}
+.g-card .cap{position:absolute;bottom:0;width:60%;height:7px;background:rgba(0,0,0,.09);border-radius:2px;left:20%;}
+.g-card .tape{position:absolute;top:-6px;left:32%;width:36%;height:9px;background:rgba(226,199,120,.65);transform:rotate(-6deg);}
+.sticker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.s-tile{aspect-ratio:1;background:var(--card-bg);border:var(--card-border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:17px;cursor:pointer;padding:4px;}
+.s-tile .lbl{font-size:7px;font-weight:700;color:var(--card-text);opacity:.7;text-align:center;line-height:1.1;}
+.quote-list{display:flex;flex-direction:column;gap:8px;}
+.q-chip{padding:10px 12px;border-radius:14px;background:var(--card-bg);border:var(--card-border);font-weight:700;font-size:12.5px;color:var(--card-text);cursor:pointer;font-family:var(--drawer-quote-font,inherit);}
+.font-list{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;max-height:260px;overflow-y:auto;}
+.f-row{padding:10px 12px;border-radius:12px;background:var(--card-bg);border:var(--card-border);cursor:pointer;font-size:14px;color:var(--card-text);display:flex;align-items:center;justify-content:space-between;}
+.f-row .star{font-size:10px;color:var(--accent-strong);}
+.text-controls{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.text-controls button{font-size:10.5px;font-weight:700;padding:7px 9px;border-radius:10px;background:var(--card-bg);border:var(--card-border);color:var(--card-text);cursor:pointer;}
+.text-area-demo{width:100%;border:var(--card-border);border-radius:12px;padding:10px;font-size:13px;color:var(--card-text);background:var(--card-bg);margin-bottom:14px;min-height:44px;}
+.filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.filt-swatch{height:42px;border-radius:10px;margin-bottom:6px;background:linear-gradient(120deg,#f5aeca,#a8d8f0,#f2dd81);}
+.doodle-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.d-tile{aspect-ratio:1;background:var(--card-bg);border:var(--card-border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--accent-strong);font-family:"Caveat",cursive;cursor:pointer;}
+.layer-stack{display:flex;flex-direction:column;gap:6px;}
+.layer-row{padding:9px 11px;border-radius:10px;background:var(--card-bg);border:var(--card-border);font-size:11.5px;font-weight:700;color:var(--card-text);display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.layer-row .lctrl{display:flex;gap:4px;}
+.layer-row .lctrl button{width:22px;height:22px;border-radius:6px;background:transparent;border:1px solid var(--card-border);cursor:pointer;color:var(--card-text);display:flex;align-items:center;justify-content:center;}
+.layer-row .lctrl svg{width:12px;height:12px;}
+.upload-zone{border:2px dashed var(--accent-strong);border-radius:16px;padding:24px 14px;text-align:center;color:var(--card-text);margin-bottom:12px;}
+.upload-zone .lbl{font-family:var(--font-head);font-weight:700;font-size:14px;margin-bottom:4px;}
+.upload-zone .sub{font-size:11px;opacity:.75;margin-bottom:10px;}
+.upload-zone .choose{display:inline-block;font-size:11.5px;font-weight:700;padding:8px 14px;border-radius:20px;background:var(--accent-strong);color:var(--on-accent);}
+.filetypes{font-size:10px;text-align:center;opacity:.6;color:var(--card-text);margin-bottom:14px;}
+.recent-row{display:flex;gap:8px;}
+.recent-row .rt{width:44px;height:44px;border-radius:8px;background:var(--card-bg);border:var(--card-border);}
+
+/* ---------- canvas ---------- */
+.canvas-wrap{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--canvas-wrap-bg);overflow:hidden;padding:20px;min-width:0;}
+.demo-toggle{display:flex;gap:6px;margin-bottom:14px;background:rgba(255,255,255,.55);padding:4px;border-radius:20px;}
+.demo-toggle button{font-size:11px;font-weight:700;padding:7px 13px;border-radius:16px;border:none;background:transparent;color:var(--ink);cursor:pointer;}
+.demo-toggle button.active{background:var(--accent-strong);color:var(--on-accent);}
+.canvas-frame{position:relative;width:min(420px,86%);aspect-ratio:4/5;background:var(--canvas-bg);border:var(--canvas-border);border-radius:var(--canvas-radius);box-shadow:var(--canvas-shadow);display:flex;align-items:center;justify-content:center;text-align:center;}
+.canvas-frame .placeholder{color:var(--canvas-placeholder);padding:20px;}
+.canvas-frame .placeholder .big{font-family:var(--font-head);font-size:17px;font-weight:700;margin:0 0 6px;}
+.canvas-frame .placeholder .small{font-size:11.5px;opacity:.85;margin:0;}
+.deco{display:none;position:absolute;pointer-events:none;}
+
+/* composed sample objects inside canvas */
+.c-obj{position:absolute;cursor:pointer;}
+.c-photo{top:12%;left:10%;width:55%;height:46%;border-radius:8px;background:linear-gradient(150deg,var(--accent-strong),var(--card-bg) 120%);border:2px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.15);display:flex;align-items:flex-end;justify-content:flex-start;}
+.c-photo span{font-size:9px;background:rgba(0,0,0,.35);color:#fff;padding:2px 6px;border-radius:4px;margin:6px;}
+.c-sticker{bottom:14%;right:10%;font-size:30px;}
+.c-quote{bottom:8%;left:12%;font-size:12px;font-weight:700;background:var(--card-bg);border:var(--card-border);color:var(--card-text);padding:6px 10px;border-radius:12px;font-family:var(--drawer-quote-font,inherit);}
+.c-obj.selected{outline:2px dashed var(--accent-strong);outline-offset:4px;}
+.sel-handle{position:absolute;width:11px;height:11px;background:#fff;border:2px solid var(--accent-strong);border-radius:3px;}
+.sel-handle.rot{border-radius:50%;top:-54px;left:50%;transform:translateX(-50%);}
+.rot-line{position:absolute;top:-50px;left:50%;width:1px;height:22px;background:var(--accent-strong);}
+.float-toolbar{position:absolute;top:-96px;left:50%;transform:translateX(-50%);display:flex;gap:2px;background:var(--card-bg);border:var(--card-border);border-radius:12px;padding:4px;box-shadow:0 6px 16px rgba(0,0,0,.15);z-index:5;}
+.float-toolbar button{width:26px;height:26px;border-radius:8px;border:none;background:transparent;color:var(--card-text);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.float-toolbar button:hover{background:rgba(0,0,0,.06);}
+.float-toolbar svg{width:14px;height:14px;}
+
+/* ---------- export modal ---------- */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,15,20,.55);display:none;align-items:center;justify-content:center;z-index:50;}
+.modal-overlay.open{display:flex;}
+.modal-card{width:340px;background:var(--drawer-bg);border-radius:20px;padding:22px;box-shadow:0 20px 50px rgba(0,0,0,.3);}
+.modal-card h3{font-family:var(--font-head);margin:0 0 4px;color:var(--ink);font-size:18px;}
+.modal-card .sub{font-size:12px;color:var(--card-text);opacity:.8;margin-bottom:16px;}
+.modal-row{margin-bottom:16px;}
+.modal-row label{font-size:11px;font-weight:700;color:var(--card-text);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:7px;}
+.seg{display:flex;gap:6px;}
+.seg button{flex:1;padding:9px;border-radius:10px;background:var(--card-bg);border:var(--card-border);color:var(--card-text);font-weight:700;font-size:12px;cursor:pointer;}
+.seg button.active{background:var(--accent-strong);color:var(--on-accent);border-color:var(--accent-strong);}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;color:var(--ink);}
+.download-btn{width:100%;padding:12px;border-radius:14px;background:var(--accent-strong);color:var(--on-accent);border:none;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;}
+
+/* ---------- preview mode ---------- */
+body.preview .toolbar,body.preview .drawer,body.preview .demo-toggle{display:none !important;}
+body.preview .canvas-frame{width:min(480px,92%);}
+.preview-bar{display:none;height:56px;align-items:center;justify-content:center;gap:10px;background:var(--topbar-bg);border-top:var(--chrome-border);}
+body.preview .preview-bar{display:flex;}
+
+/* ---------- mobile ---------- */
+@media (max-width:820px){
+  .editor-body{flex-direction:column;}
+  .toolbar{width:100%;flex-direction:row;order:2;padding:8px;overflow-x:auto;height:var(--mobile-bar-h);}
+  .tool-btn{width:64px;height:100%;flex:none;}
+  .tool-sep{width:1px;height:60%;margin:0 4px;}
+  .drawer{order:3;width:100% !important;max-height:0;border-right:none;border-top:var(--chrome-border);}
+  .drawer.open{max-height:46vh;}
+  .drawer-inner{width:100%;}
+  .canvas-wrap{order:1;flex:1;}
+  body.preview .toolbar{display:none !important;}
+  .topbar{gap:8px;padding:0 10px;}
+  .topbar .brand b{font-size:14px;}
+  .topbar .brand span{font-size:9px;}
+  .pill-btn{padding:8px 10px;font-size:11px;}
+  .pill-btn span.lbl-full{display:none;}
+  .icon-btn{width:32px;height:32px;}
+  .world-switcher{padding:0 10px;gap:6px;}
+  .world-switcher button{padding:6px 10px;font-size:11px;}
+}
+
+/* ============ THEME: PASTEL ============ */
+[data-theme="pastel"]{
+  --bg:#fdf3f7;--topbar-bg:#fffaf2;--toolbar-bg:#fff7fa;--drawer-bg:#fffaf2;
+  --chrome-border:2px solid #33293a;--ink:#5b4245;--logo-color:#33293a;
+  --font-head:"Fraunces",serif;--accent-strong:#ee6fa5;--on-accent:#fff;
+  --btn-bg:#fff;--btn-text:#33293a;--btn-border:2px solid #33293a;--btn-radius:10px;
+  --tool-bg:#fff;--tool-text:#33293a;--tool-border:2px solid #33293a;--tool-radius:14px;--tool-sep:#e9c9d8;
+  --canvas-wrap-bg:radial-gradient(#f3cede 1.5px,transparent 1.5px) 0 0/16px 16px,#fce8ef;
+  --canvas-bg:#fff;--canvas-border:3px dashed #ee6fa5;--canvas-radius:26px;
+  --canvas-shadow:6px 7px 0 rgba(51,41,58,.14);--canvas-placeholder:#c98aa4;
+  --card-bg:#fff;--card-border:1.5px solid #f0cbdb;--card-radius:12px;--card-text:#a83a68;
+  --drawer-quote-font:"Caveat",cursive;
+}
+[data-theme="pastel"] .deco-pastel{display:block;color:#ee6fa5;}
+[data-theme="pastel"] .deco-pastel.d1{top:6%;right:8%;font-size:24px;color:#a8d8f0;transform:rotate(10deg);}
+[data-theme="pastel"] .deco-pastel.d2{bottom:20%;left:6%;font-size:20px;transform:rotate(-14deg);}
+[data-theme="pastel"] .deco-pastel.d3{top:15%;left:8%;font-size:17px;color:#f2dd81;}
+[data-theme="pastel"] .deco-pastel.d4{bottom:24%;right:5%;font-size:19px;color:#c8b6e4;}
+[data-theme="pastel"] .deco-pastel.d5{top:36%;right:2%;font-size:15px;}
+
+/* ============ THEME: Y2K (soft kawaii denim) ============ */
+[data-theme="y2k"]{
+  --bg:linear-gradient(160deg,#eaf4ff,#dbe9fb 55%,#f6e6f2);
+  --topbar-bg:#eef6ff;--toolbar-bg:#e3f0fc;--drawer-bg:#eef6ff;
+  --chrome-border:2px solid #3c6e9e;--ink:#2f4e6b;--logo-color:#2f4e6b;
+  --font-head:"Baloo 2",cursive;--accent-strong:#5b9bd5;--on-accent:#fff;
+  --btn-bg:#fff;--btn-text:#2f4e6b;--btn-border:2px solid #3c6e9e;--btn-radius:16px;
+  --tool-bg:#fff;--tool-text:#3c6e9e;--tool-border:2px solid #bcdcf7;--tool-radius:16px;--tool-sep:#cfe6fb;
+  --canvas-wrap-bg:repeating-linear-gradient(55deg,#dce9f7 0 14px,#cfe1f4 14px 16px);
+  --canvas-bg:#fff;--canvas-border:3px solid #5b9bd5;--canvas-radius:22px;
+  --canvas-shadow:6px 7px 0 rgba(60,110,158,.22);--canvas-placeholder:#7fa3c4;
+  --card-bg:#fff;--card-border:2px solid #bcdcf7;--card-radius:14px;--card-text:#2f4e6b;
+  --drawer-quote-font:"Baloo 2",cursive;
+}
+[data-theme="y2k"] .deco-y2k{display:block;color:#5b9bd5;}
+[data-theme="y2k"] .deco-y2k.d1{top:7%;left:7%;font-size:24px;}
+[data-theme="y2k"] .deco-y2k.d2{bottom:22%;right:8%;font-size:20px;color:#f7a8c4;}
+[data-theme="y2k"] .deco-y2k.d3{top:16%;right:6%;font-size:18px;}
+[data-theme="y2k"] .deco-y2k.d4{bottom:25%;left:5%;font-size:15px;color:#2f4e6b;font-weight:700;}
+[data-theme="y2k"] .deco-y2k.d5{top:40%;left:3%;font-size:20px;color:#f7a8c4;}
+
+/* ============ THEME: 90S ============ */
+[data-theme="nineties"]{
+  --bg:#e9dfad;--topbar-bg:#f3ecc9;--toolbar-bg:#efe4b0;--drawer-bg:#f3ecc9;
+  --chrome-border:3px solid #262a28;--ink:#262a28;--logo-color:#262a28;
+  --font-head:"Bungee",sans-serif;--accent-strong:#82aa9a;--on-accent:#1c211f;
+  --btn-bg:#fff8dc;--btn-text:#262a28;--btn-border:3px solid #262a28;--btn-radius:2px;
+  --tool-bg:#fff8dc;--tool-text:#262a28;--tool-border:3px solid #262a28;--tool-radius:2px;--tool-sep:#c9bd83;
+  --canvas-wrap-bg:repeating-linear-gradient(45deg,#e2d69b 0 12px,#ded091 12px 24px);
+  --canvas-bg:#fff8dc;--canvas-border:4px solid #262a28;--canvas-radius:0px;
+  --canvas-shadow:9px 9px 0 #82aa9a;--canvas-placeholder:#7a7460;
+  --card-bg:#fff8dc;--card-border:2px solid #262a28;--card-radius:2px;--card-text:#262a28;
+  --drawer-quote-font:"Bungee",sans-serif;
+}
+[data-theme="nineties"] .deco-nineties{display:block;font-weight:800;color:#262a28;}
+[data-theme="nineties"] .deco-nineties.d1{top:6%;right:9%;font-size:20px;}
+[data-theme="nineties"] .deco-nineties.d2{bottom:20%;left:7%;font-size:17px;}
+[data-theme="nineties"] .deco-nineties.d3{top:16%;left:6%;font-size:15px;color:#b3503f;}
+[data-theme="nineties"] .deco-nineties.d4{bottom:24%;right:5%;font-size:18px;color:#82aa9a;}
+[data-theme="nineties"] .deco-nineties.d5{top:40%;right:2%;font-size:13px;}
+
+/* ============ THEME: GRUNGE ============ */
+[data-theme="grunge"]{
+  --bg:#1c1a1f;--topbar-bg:#242026;--toolbar-bg:#221e24;--drawer-bg:#242026;
+  --chrome-border:1px solid #4a4350;--ink:#e7dfe2;--logo-color:#fff;
+  --font-head:"Anton",sans-serif;--accent-strong:#c25770;--on-accent:#1c1a1f;
+  --btn-bg:#2c272f;--btn-text:#e7dfe2;--btn-border:1px solid #4a4350;--btn-radius:3px;
+  --tool-bg:#2c272f;--tool-text:#cbb;--tool-border:1px solid #4a4350;--tool-radius:3px;--tool-sep:#3a343d;
+  --canvas-wrap-bg:repeating-linear-gradient(-12deg,#1c1a1f 0 34px,#221e24 34px 36px);
+  --canvas-bg:#2a262d;--canvas-border:2px solid #75707a;--canvas-radius:2px;
+  --canvas-shadow:10px 10px 0 #c25770;--canvas-placeholder:#948d99;
+  --card-bg:#2c272f;--card-border:1px solid #4a4350;--card-radius:3px;--card-text:#e2707f;
+  --drawer-quote-font:"Anton",sans-serif;
+}
+[data-theme="grunge"] .canvas-frame{clip-path:polygon(0% 2%,3% 0%,97% 1%,100% 4%,99% 97%,96% 100%,2% 99%,0% 96%);}
+[data-theme="grunge"] .deco-grunge{display:block;color:#c25770;font-weight:800;}
+[data-theme="grunge"] .deco-grunge.d1{top:6%;left:7%;font-size:22px;}
+[data-theme="grunge"] .deco-grunge.d2{bottom:20%;right:9%;font-size:18px;color:#948d99;}
+[data-theme="grunge"] .deco-grunge.d3{top:16%;right:6%;font-size:16px;color:#e7dfe2;}
+[data-theme="grunge"] .deco-grunge.d4{bottom:24%;left:5%;font-size:14px;}
+[data-theme="grunge"] .deco-grunge.d5{top:40%;left:2%;font-size:19px;color:#948d99;}
+
+/* ============ THEME: SHOUJO ============ */
+[data-theme="shoujo"]{
+  --bg:linear-gradient(160deg,#f7e3e8,#fdf4e6);--topbar-bg:#fdf6f4;--toolbar-bg:#fbeef0;--drawer-bg:#fdf6f4;
+  --chrome-border:1.5px dotted #a35a72;--ink:#6d3c4c;--logo-color:#8b4f51;
+  --font-head:"Fraunces",serif;--accent-strong:#ba5f75;--on-accent:#fff;
+  --btn-bg:#fff;--btn-text:#6d3c4c;--btn-border:1.5px solid #d99cab;--btn-radius:20px;
+  --tool-bg:#fff;--tool-text:#a35a72;--tool-border:1.5px solid #eccdd4;--tool-radius:50%;--tool-sep:#f0d9de;
+  --canvas-wrap-bg:radial-gradient(circle at 20% 20%,rgba(255,255,255,.7),transparent 55%),linear-gradient(160deg,#f7e3e8,#fdf4e6);
+  --canvas-bg:#fffaf9;--canvas-border:1.5px dotted #ba5f75;--canvas-radius:50px;
+  --canvas-shadow:0 18px 40px rgba(186,95,117,.16);--canvas-placeholder:#c088a0;
+  --card-bg:#fff;--card-border:1px dotted #eccdd4;--card-radius:16px;--card-text:#8b4f51;
+  --drawer-quote-font:"Caveat",cursive;
+}
+[data-theme="shoujo"] .deco-shoujo{display:block;color:#e79cb0;font-family:"Caveat",cursive;}
+[data-theme="shoujo"] .deco-shoujo.d1{top:6%;right:7%;font-size:28px;transform:rotate(6deg);}
+[data-theme="shoujo"] .deco-shoujo.d2{bottom:20%;left:6%;font-size:22px;color:#ba5f75;}
+[data-theme="shoujo"] .deco-shoujo.d3{top:16%;left:7%;font-size:18px;}
+[data-theme="shoujo"] .deco-shoujo.d4{bottom:24%;right:5%;font-size:20px;color:#ba5f75;}
+[data-theme="shoujo"] .deco-shoujo.d5{top:40%;right:2%;font-size:16px;}
+
+/* ============ THEME: FLORAL ============ */
+[data-theme="floral"]{
+  --bg:linear-gradient(#eef2e6,#e4eef0);--topbar-bg:#f4f6ec;--toolbar-bg:#eef2e6;--drawer-bg:#f4f6ec;
+  --chrome-border:1.5px solid #7c9a72;--ink:#3f4f3a;--logo-color:#3f4f3a;
+  --font-head:"Cormorant Garamond",serif;--accent-strong:#7c9a72;--on-accent:#fff;
+  --btn-bg:#fff;--btn-text:#3f4f3a;--btn-border:1.5px solid #b9cdb0;--btn-radius:14px;
+  --tool-bg:#fff;--tool-text:#5c7455;--tool-border:1.5px solid #cfe0c8;--tool-radius:16px;--tool-sep:#d7e5cf;
+  --canvas-wrap-bg:radial-gradient(circle at 22% 18%,#fff 0 5px,transparent 6px) 0 0/38px 38px,linear-gradient(#eef2e6,#e4eef0);
+  --canvas-bg:#fdfdf8;--canvas-border:1.5px solid #a9c19f;--canvas-radius:40% 40% 20px 20px/50px 50px 20px 20px;
+  --canvas-shadow:0 16px 34px rgba(63,79,58,.14);--canvas-placeholder:#7f9576;
+  --card-bg:#fff;--card-border:1px solid #d7e5cf;--card-radius:14px;--card-text:#3f4f3a;
+  --drawer-quote-font:"Cormorant Garamond",serif;
+}
+[data-theme="floral"] .deco-floral{display:block;color:#7c9a72;}
+[data-theme="floral"] .deco-floral.d1{top:6%;left:6%;font-size:26px;color:#8bbbc9;}
+[data-theme="floral"] .deco-floral.d2{bottom:20%;right:7%;font-size:20px;}
+[data-theme="floral"] .deco-floral.d3{top:16%;right:6%;font-size:17px;color:#8bbbc9;}
+[data-theme="floral"] .deco-floral.d4{bottom:24%;left:5%;font-size:16px;}
+[data-theme="floral"] .deco-floral.d5{top:40%;left:2%;font-size:14px;}
+</style>
+</head>
+<body data-theme="pastel">
+
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<symbol id="ic-upload" viewBox="0 0 24 24"><path d="M12 3v12M7 8l5-5 5 5M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></symbol>
+<symbol id="ic-frames" viewBox="0 0 24 24"><rect x="3" y="4" width="14" height="14" rx="2"/><path d="M7 20h14V6"/></symbol>
+<symbol id="ic-bg" viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 1 0-18 3 3 0 0 1 0 6 1.5 1.5 0 0 0 0 3 3 3 0 0 1 0 9z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="16" cy="8" r="1"/><circle cx="16.5" cy="14.5" r="1"/></symbol>
+<symbol id="ic-sticker" viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.3 6.8 19l1-5.8L3.5 9.1l5.9-.9L12 3z"/></symbol>
+<symbol id="ic-quote" viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></symbol>
+<symbol id="ic-text" viewBox="0 0 24 24"><path d="M5 5h14M12 5v14"/></symbol>
+<symbol id="ic-filters" viewBox="0 0 24 24"><path d="M4 6h16M8 12h12M4 18h16"/><circle cx="7" cy="6" r="2"/><circle cx="17" cy="12" r="2"/><circle cx="10" cy="18" r="2"/></symbol>
+<symbol id="ic-doodle" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1z"/><path d="M14 7l3 3"/></symbol>
+<symbol id="ic-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></symbol>
+<symbol id="ic-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-9 0l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/></symbol>
+<symbol id="ic-undo" viewBox="0 0 24 24"><path d="M7 8H4V5"/><path d="M4 8a8 8 0 1 1-2 5.3"/></symbol>
+<symbol id="ic-redo" viewBox="0 0 24 24"><path d="M17 8h3V5"/><path d="M20 8a8 8 0 1 0 2 5.3"/></symbol>
+<symbol id="ic-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="ic-download" viewBox="0 0 24 24"><path d="M12 4v11M8 11l4 4 4-4M4 19h16"/></symbol>
+<symbol id="ic-x" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></symbol>
+<symbol id="ic-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2 2M17 17l2 2M19.1 4.9l-2 2M7 17l-2 2"/></symbol>
+<symbol id="ic-move" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M5 9l-3 3 3 3M19 9l3 3-3 3M9 5l3-3 3 3M9 19l3 3 3-3"/></symbol>
+<symbol id="ic-rotate" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 1 2.5 5.8"/><path d="M4 17v-4h4"/></symbol>
+<symbol id="ic-crop" viewBox="0 0 24 24"><path d="M6 2v14a2 2 0 0 0 2 2h14M18 22V8a2 2 0 0 0-2-2H2"/></symbol>
+<symbol id="ic-resize" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4L4 20"/></symbol>
+<symbol id="ic-duplicate" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V5a1 1 0 0 1 1-1h11"/></symbol>
+<symbol id="ic-forward" viewBox="0 0 24 24"><rect x="7" y="7" width="12" height="12" rx="2"/><rect x="4" y="4" width="8" height="8" rx="1" opacity=".5"/></symbol>
+<symbol id="ic-backward" viewBox="0 0 24 24"><rect x="4" y="4" width="12" height="12" rx="2"/><rect x="12" y="12" width="8" height="8" rx="1" opacity=".5"/></symbol>
+</defs>
+</svg>
+
+  <nav class="world-switcher" id="switcher">
+    <button class="ws-pastel active" data-theme="pastel">🌸 Pastel Kawaii</button>
+    <button class="ws-y2k" data-theme="y2k">💿 Y2K Kawaii</button>
+    <button class="ws-nineties" data-theme="nineties">📼 90s Kawaii</button>
+    <button class="ws-grunge" data-theme="grunge">🖤 Grunge Kawaii</button>
+    <button class="ws-shoujo" data-theme="shoujo">🌹 Shoujo Kawaii</button>
+    <button class="ws-floral" data-theme="floral">🌼 Floral Dream</button>
+  </nav>
+
+  <div class="editor-shell" id="shell">
+    <header class="topbar">
+      <div class="brand"><b>CLICKBAIT</b><span id="worldName">Pastel Kawaii</span></div>
+      <div class="tb-group">
+        <button class="icon-btn" id="undoBtn" title="Undo"><svg class="ic"><use href="#ic-undo"/></svg></button>
+        <button class="icon-btn" id="redoBtn" disabled title="Redo"><svg class="ic"><use href="#ic-redo"/></svg></button>
+      </div>
+      <div class="spacer"></div>
+      <button class="pill-btn" id="previewBtn"><svg class="ic" style="width:15px;height:15px"><use href="#ic-eye"/></svg>Preview</button>
+      <button class="pill-btn primary" id="exportBtn"><svg class="ic" style="width:15px;height:15px"><use href="#ic-download"/></svg>Export</button>
+      <button class="icon-btn" title="Settings"><svg class="ic"><use href="#ic-settings"/></svg></button>
+    </header>
+
+    <div class="editor-body">
+      <aside class="toolbar" id="toolbar">
+        <button class="tool-btn" data-tool="upload" title="Upload photos"><svg class="ic"><use href="#ic-upload"/></svg><small>Upload</small></button>
+        <button class="tool-btn" data-tool="frames" title="Frames"><svg class="ic"><use href="#ic-frames"/></svg><small>Frames</small></button>
+        <button class="tool-btn" data-tool="backgrounds" title="Backgrounds"><svg class="ic"><use href="#ic-bg"/></svg><small>Backgrounds</small></button>
+        <button class="tool-btn" data-tool="stickers" title="Stickers"><svg class="ic"><use href="#ic-sticker"/></svg><small>Stickers</small></button>
+        <button class="tool-btn" data-tool="quotes" title="Quotes"><svg class="ic"><use href="#ic-quote"/></svg><small>Quotes</small></button>
+        <button class="tool-btn" data-tool="text" title="Text"><svg class="ic"><use href="#ic-text"/></svg><small>Text</small></button>
+        <button class="tool-btn" data-tool="filters" title="Filters"><svg class="ic"><use href="#ic-filters"/></svg><small>Filters</small></button>
+        <button class="tool-btn" data-tool="doodles" title="Doodles"><svg class="ic"><use href="#ic-doodle"/></svg><small>Doodles</small></button>
+        <div class="tool-sep"></div>
+        <button class="tool-btn" data-tool="layers" title="Layers"><svg class="ic"><use href="#ic-layers"/></svg><small>Layers</small></button>
+        <button class="tool-btn" id="deleteBtn" disabled title="Delete selected"><svg class="ic"><use href="#ic-trash"/></svg><small>Delete</small></button>
+      </aside>
+
+      <section class="drawer" id="drawer"><div class="drawer-inner" id="drawerInner"></div></section>
+
+      <main class="canvas-wrap">
+        <div class="demo-toggle" id="demoToggle">
+          <button data-demo="sample" class="active">Sample design</button>
+          <button data-demo="empty">Empty canvas</button>
+        </div>
+
+        <span class="deco deco-pastel d1">✦</span><span class="deco deco-pastel d2">✿</span><span class="deco deco-pastel d3">⋆</span><span class="deco deco-pastel d4">🎀</span><span class="deco deco-pastel d5">♡</span>
+        <span class="deco deco-y2k d1">🦋</span><span class="deco deco-y2k d2">♡</span><span class="deco deco-y2k d3">★</span><span class="deco deco-y2k d4">CD</span><span class="deco deco-y2k d5">✧</span>
+        <span class="deco deco-nineties d1">★</span><span class="deco deco-nineties d2">☺</span><span class="deco deco-nineties d3">☆</span><span class="deco deco-nineties d4">REC</span><span class="deco deco-nineties d5">📼</span>
+        <span class="deco deco-grunge d1">××</span><span class="deco deco-grunge d2">!!</span><span class="deco deco-grunge d3">♡</span><span class="deco deco-grunge d4">➤</span><span class="deco deco-grunge d5">▨</span>
+        <span class="deco deco-shoujo d1">tehe ♡</span><span class="deco deco-shoujo d2">❀</span><span class="deco deco-shoujo d3">✧</span><span class="deco deco-shoujo d4">🎀</span><span class="deco deco-shoujo d5">˚⋆</span>
+        <span class="deco deco-floral d1">❋</span><span class="deco deco-floral d2">🦋</span><span class="deco deco-floral d3">⌇</span><span class="deco deco-floral d4">⚘</span><span class="deco deco-floral d5">❀</span>
+
+        <div class="canvas-frame" id="canvasFrame">
+          <div class="placeholder" id="emptyMsg" style="display:none">
+            <p class="big">Your canvas is ready ♡</p>
+            <p class="small">Upload a photo, choose a frame, or start with a background.</p>
+          </div>
+          <div id="sampleObjs">
+            <div class="c-obj c-photo" id="samplePhoto"><span>sample.jpg</span></div>
+            <div class="c-obj c-sticker">🎀</div>
+            <div class="c-obj c-quote">just a girl ♡</div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <div class="preview-bar">
+      <button class="pill-btn" id="backToEdit">Back to Edit</button>
+      <button class="pill-btn primary" id="previewExportBtn"><svg class="ic" style="width:15px;height:15px"><use href="#ic-download"/></svg>Export</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="exportModal">
+    <div class="modal-card" style="position:relative">
+      <button class="modal-close" id="modalClose"><svg class="ic"><use href="#ic-x"/></svg></button>
+      <h3>Export your creation ♡</h3>
+      <p class="sub">Save your design straight to your device — no account needed.</p>
+      <div class="modal-row">
+        <label>Format</label>
+        <div class="seg" id="formatSeg"><button class="active" data-fmt="PNG">PNG</button><button data-fmt="JPG">JPG</button></div>
+      </div>
+      <div class="modal-row">
+        <label>Quality</label>
+        <div class="seg" id="qualitySeg"><button class="active" data-q="Standard">Standard</button><button data-q="High">High</button></div>
+      </div>
+      <button class="download-btn"><svg class="ic" style="width:15px;height:15px"><use href="#ic-download"/></svg>Download Image</button>
+    </div>
+  </div>
+
+<script>
+var WORLD_NAMES = {pastel:"Pastel Kawaii",y2k:"Y2K Kawaii",nineties:"90s Kawaii",grunge:"Grunge Kawaii",shoujo:"Shoujo Kawaii",floral:"Floral Dream"};
+
+function fr(name,shape,cats,caption,tilt){ return {name:name,shape:shape,cats:cats,caption:!!caption,tilt:!!tilt}; }
+
+var CONTENT = {
+  pastel:{
+    frames:[fr("Pink Polaroid","slot1",["Polaroid","1 Photo"],true),fr("Two-Photo Pastel","slot2",["2 Photos"]),
+      fr("Floral Scrapbook","slot3",["Scrapbook","Floral","3 Photos"],false,true),fr("Cute Diary Page","diary",["Diary","1 Photo"]),
+      fr("College Memory","slot4",["College","4 Photos"]),fr("Ribbon Frame","slot1",["1 Photo"])],
+    bg:{Solid:["Soft Pink","Lavender","Baby Blue","Cream","Peach"],Patterns:["Polka Dots","Lavender Gingham","Tiny Hearts","Soft Checkerboard"],
+      Wallpaper:["Ribbon Wallpaper","Cloud Wallpaper"],Paper:["Notebook Paper","Scrapbook Paper"],Decorative:["Floral Paper","Clouds"]},
+    stickers:[["☁","Cloud"],["⋆","Sparkle"],["˚✩","Star Sparkle"],["✿","Flower"],["❀","Blossom"],["⚘","Tulip"],["🎀","Bow"],["୨୧","Ribbon"],["✎","Stationery"],["📌","Pin"],["♡","Heart"],["▤","Washi Tape"],["●","Pearl"],["⬤","Button"]],
+    quotesFont:"'Caveat',cursive",
+    fontRec:["Cute","Handwritten"]
+  },
+  y2k:{
+    frames:[fr("Y2K Magazine","magazine",["Magazine","1 Photo"]),fr("CD Case Frame","slot1",["1 Photo"]),
+      fr("Digital Camera Frame","slot1",["1 Photo"],true),fr("Denim Scrapbook","slot3",["Scrapbook","3 Photos"],false,true),
+      fr("Fake Profile Card","idcard",["ID Card"]),fr("Photo Booth Strip","filmstrip",["Photo Booth","Film Strip"])],
+    bg:{Solid:["Baby Blue","Denim Blue","Soft Pink","Baby Purple","Sky Blue"],Patterns:["Blue Checkerboard","Butterfly Wallpaper","Stars"],
+      Wallpaper:["Cute Digital Pattern","Soft Glossy Pattern"],Paper:["Denim Texture"],Decorative:["Butterfly Wallpaper 2"]},
+    stickers:[["♡","Heart"],["★","Star"],["⋆","Sparkle"],["CD","CD"],["☎","Flip Phone"],["🎧","Headphones"],["💾","Digital Icon"],["🦋","Butterfly"],["✧","Sparkle"],["◧","Denim Patch"],["▫","Patch"],["❋","Star Burst"]],
+    quotesFont:"'Baloo 2',cursive",
+    fontRec:["Bubbly","Retro"]
+  },
+  nineties:{
+    frames:[fr("Film Strip","filmstrip",["Film Strip"]),fr("Polaroid","slot1",["Polaroid","1 Photo"],true),
+      fr("90s Magazine","magazine",["Magazine"]),fr("Photo Booth","filmstrip",["Photo Booth"]),
+      fr("Vintage Postcard","postcard",["Postcard"]),fr("Four-Photo Collage","slot4",["4 Photos"])],
+    bg:{Solid:["Warm Cream","Muted Pink","Vintage Green","Baby Blue"],Patterns:["Retro Stripes","Checkerboard","Film Grain"],
+      Wallpaper:["Old Magazine Texture"],Paper:["Vintage Paper","Newspaper"],Decorative:["Newspaper Clippings"]},
+    stickers:[["📼","Cassette"],["☆","Star"],["☺","Smiley"],["✿","Flower"],["★","Star Icon"],["✎","Stationery"],["▤","Notepad"],["♡","Heart"],["◐","Camera Lens"],["▧","Film Tile"],["⌇","Squiggle"],["⚙","Retro Icon"]],
+    quotesFont:"'Bungee',sans-serif",
+    fontRec:["Retro","Bold"]
+  },
+  grunge:{
+    frames:[fr("Torn-Paper Collage","slot3",["Scrapbook","3 Photos"],false,true),fr("Photocopy Frame","slot1",["1 Photo"]),
+      fr("Polaroid + Tape","slot1",["Polaroid"],true,true),fr("Grunge Magazine","magazine",["Magazine"]),
+      fr("Messy Scrapbook","slot4",["Scrapbook","4 Photos"],false,true)],
+    bg:{Solid:["Black","Charcoal","Dirty White","Dusty Pink"],Patterns:["Photocopy Texture","Torn Paper","Graffiti"],
+      Wallpaper:["Grunge Texture"],Paper:["Dirty Notebook Paper"],Decorative:["Newspaper"]},
+    stickers:[["×","X Mark"],["!!","Exclaim"],["♡","Heart"],["☓","Broken Heart"],["▨","Tape"],["▬","Tape Strip"],["➤","Arrow"],["✎","Scribble"],["◆","Symbol"],["▧","Graffiti Tag"],["⌇","Scribble Mark"],["♢","Symbol"]],
+    quotesFont:"'Anton',sans-serif",
+    fontRec:["Bold","Handwritten"]
+  },
+  shoujo:{
+    frames:[fr("Romantic Letter","diary",["Diary"]),fr("Manga Panel","slot1",["1 Photo"]),
+      fr("Floral Portrait","slot1",["Polaroid","Floral"],true),fr("Shoujo Magazine","magazine",["Magazine"]),
+      fr("Lace Frame","slot1",["1 Photo"]),fr("Love-Letter Frame","postcard",["Postcard"])],
+    bg:{Solid:["Blush Pink","Cream","Rose","Lavender"],Patterns:["Lace","Soft Manga Paper","Pink Gradient"],
+      Wallpaper:["Floral Wallpaper"],Paper:["Romantic Stationery"],Decorative:["Rose Paper"]},
+    stickers:[["♡","Heart"],["🎀","Bow"],["୨୧","Ribbon"],["❀","Rose"],["✿","Flower"],["✧","Sparkle"],["⋆","Sparkle"],["˚","Sparkle Dot"],["❦","Romantic Symbol"],["⌇","Lace Trim"],["❋","Flower Burst"],["◈","Gem"]],
+    quotesFont:"'Caveat',cursive",
+    fontRec:["Elegant","Serif"]
+  },
+  floral:{
+    frames:[fr("Botanical Scrapbook","slot3",["Scrapbook","Floral","3 Photos"],false,true),fr("Flower Journal","diary",["Diary","Floral"]),
+      fr("Garden Postcard","postcard",["Postcard","Floral"]),fr("Floral Polaroid","slot1",["Polaroid","Floral"],true),
+      fr("Pressed-Flower Frame","slot1",["Floral","1 Photo"]),fr("Vintage Diary","diary",["Diary"])],
+    bg:{Solid:["Sage Green","Cream","Dusty Blue","Butter Yellow"],Patterns:["Sage Gingham","Pressed-Flower Texture"],
+      Wallpaper:["Floral Wallpaper"],Paper:["Vintage Paper","Garden Paper"],Decorative:["Botanical Paper","Watercolor"]},
+    stickers:[["⚘","Tulip"],["❀","Blossom"],["❋","Flower Burst"],["🦋","Butterfly"],["⌇","Leaf Vein"],["✎","Handwritten Note"],["❦","Garden Label"],["✿","Daisy"],["˚","Pressed Petal"],["❃","Botanical"],["🌿","Leaf"],["♡","Heart"]],
+    quotesFont:"'Cormorant Garamond',serif",
+    fontRec:["Elegant","Serif"]
+  }
+};
+
+var QUOTES = ["just a girl ♡","romanticize everything","life lately","main character energy","collecting memories","stay soft","pretty little moments","made with love","currently obsessed","just vibes"];
+
+var FONTS = [
+  ["Sweet Bubble","Cute","'Baloo 2',cursive",700,"normal"],
+  ["Bubbly Round","Bubbly","'Baloo 2',cursive",500,"normal"],
+  ["Kawaii Script","Kawaii","'Caveat',cursive",600,"normal"],
+  ["Handwritten Note","Handwritten","'Caveat',cursive",500,"normal"],
+  ["Elegant Serif","Elegant","'Fraunces',serif",600,"italic"],
+  ["Soft Serif","Serif","'Fraunces',serif",700,"normal"],
+  ["Refined Serif","Serif","'Cormorant Garamond',serif",600,"normal"],
+  ["Retro Chunky","Retro","'Bungee',sans-serif",400,"normal"],
+  ["Bold Statement","Bold","'Anton',sans-serif",400,"normal"],
+  ["Clean Casual","Casual","'DM Sans',sans-serif",500,"normal"],
+  ["Casual Medium","Casual","'DM Sans',sans-serif",700,"normal"],
+  ["Delicate Italic","Elegant","'Cormorant Garamond',serif",500,"italic"]
+];
+
+/* Filters are adjustment PRESETS (CSS filter stand-ins for future Fabric.js/canvas filters), not image assets. Each world curates its own named set. */
+var WORLD_FILTERS = {
+  pastel:[["Original","none"],["Cotton Candy","saturate(.75) brightness(1.1) hue-rotate(-8deg)"],["Strawberry Milk","sepia(.15) saturate(1.3) brightness(1.05)"],["Pastel Glow","brightness(1.12) contrast(.92) saturate(.8)"],["Soft Dream","brightness(1.08) saturate(.85) blur(.4px)"],["Black & White","grayscale(1)"]],
+  y2k:[["Original","none"],["Blue Flash","saturate(1.3) hue-rotate(12deg) brightness(1.05)"],["Digital Pop","brightness(1.2) saturate(1.3) contrast(1.05)"],["Denim Glow","contrast(1.05) saturate(.85) hue-rotate(8deg)"],["2000s Camera","contrast(1.15) saturate(1.1) brightness(.98)"],["Black & White","grayscale(1)"]],
+  nineties:[["Original","none"],["Film Roll","sepia(.3) contrast(1.05) saturate(.9)"],["Faded Memory","brightness(1.1) saturate(.55) contrast(.9)"],["Warm Camera","sepia(.2) saturate(1.25) brightness(1.03)"],["Retro Flash","contrast(1.1) saturate(1.15) hue-rotate(-5deg)"],["Black & White","grayscale(1)"]],
+  grunge:[["Original","none"],["Photocopy","grayscale(.85) contrast(1.3)"],["Dirty Film","contrast(1.1) brightness(.9) saturate(.7)"],["Dark Flash","brightness(.8) contrast(1.2)"],["Washed Out","brightness(1.15) saturate(.4)"],["Black & White","grayscale(1)"]],
+  shoujo:[["Original","none"],["Rose Glow","sepia(.2) saturate(1.3) hue-rotate(-5deg) brightness(1.05)"],["Romantic Film","contrast(1.05) saturate(1.1) brightness(1.02)"],["Soft Bloom","brightness(1.1) saturate(.85) blur(.3px)"],["Dreamy Light","brightness(1.15) contrast(.9) saturate(.9)"],["Black & White","grayscale(1)"]],
+  floral:[["Original","none"],["Garden Light","brightness(1.12) saturate(1.1)"],["Vintage Bloom","sepia(.25) saturate(1.1) contrast(.95)"],["Sage Film","hue-rotate(60deg) saturate(.7) brightness(1.05)"],["Watercolor Glow","brightness(1.1) saturate(.75) blur(.3px)"],["Black & White","grayscale(1)"]]
+};
+
+var DOODLE_CATS = {Stars:["★","☆"],Hearts:["♡","˚♡"],Flowers:["❀","✿"],Clouds:["☁"],Arrows:["➳","→"],Sparkles:["✧","⋆","˚"],Swirls:["↺","〰"],Lines:["⌇","¦"],Scribbles:["✎","~"]};
+var LAYER_STACK = ["Doodle","Text","Quote","Sticker","Frame","Photo 2","Photo 1","Background"];
+
+var state = {theme:"pastel", tool:null, bgTab:"Solid", stickerCat:null, doodleCat:null, demo:"sample", selected:false};
+
+function frameShapeHTML(f){
+  var inner="";
+  if(f.shape==="slot1"){ inner='<div class="slot" style="width:70%;height:80%"></div>'; }
+  else if(f.shape==="slot2"){ inner='<div class="slot" style="width:44%;height:80%"></div><div class="slot" style="width:44%;height:80%"></div>'; }
+  else if(f.shape==="slot3"){ inner='<div class="slot" style="width:44%;height:38%"></div><div class="slot" style="width:44%;height:38%"></div><div class="slot" style="width:92%;height:38%;position:absolute;bottom:2px"></div>'; }
+  else if(f.shape==="slot4"){ inner='<div class="slot" style="width:44%;height:44%"></div><div class="slot" style="width:44%;height:44%"></div><div class="slot" style="width:44%;height:44%"></div><div class="slot" style="width:44%;height:44%"></div>'; }
+  else if(f.shape==="filmstrip"){ inner='<div style="display:flex;flex-direction:column;gap:3px;width:60%;height:100%;justify-content:center">'+
+      [1,2,3].map(function(){return '<div style="display:flex;align-items:center;gap:2px"><span style="width:3px;height:3px;border-radius:50%;background:var(--card-text)"></span><div class="slot" style="flex:1;height:13px"></div><span style="width:3px;height:3px;border-radius:50%;background:var(--card-text)"></span></div>';}).join('')+'</div>'; }
+  else if(f.shape==="idcard"){ inner='<div style="display:flex;align-items:center;gap:8px;width:82%"><div class="slot" style="width:26px;height:26px;border-radius:50%;flex:none"></div><div style="flex:1;display:flex;flex-direction:column;gap:4px"><div style="height:4px;border-radius:2px;background:var(--card-text);opacity:.35"></div><div style="height:4px;border-radius:2px;background:var(--card-text);opacity:.25;width:70%"></div><div style="height:4px;border-radius:2px;background:var(--card-text);opacity:.25;width:50%"></div></div></div>'; }
+  else if(f.shape==="magazine"){ inner='<div style="display:flex;flex-direction:column;align-items:center;gap:5px;width:82%;height:90%"><div style="width:100%;height:9px;border-radius:2px;background:var(--accent-strong)"></div><div class="slot" style="width:100%;flex:1"></div></div>'; }
+  else if(f.shape==="postcard"){ inner='<div style="display:flex;gap:5px;width:88%;height:80%"><div class="slot" style="width:50%;height:100%"></div><div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:4px;border-left:1px dashed var(--card-text);padding-left:5px"><div style="height:3px;background:var(--card-text);opacity:.3;border-radius:2px"></div><div style="height:3px;background:var(--card-text);opacity:.3;border-radius:2px;width:70%"></div><div style="height:3px;background:var(--card-text);opacity:.3;border-radius:2px;width:50%"></div></div></div>'; }
+  else if(f.shape==="ticket"){ inner='<div style="display:flex;width:88%;height:80%"><div class="slot" style="width:65%;height:100%"></div><div style="flex:1;position:relative;border-left:2px dashed var(--card-text);display:flex;align-items:center;justify-content:center"><span style="font-size:8px;color:var(--card-text);writing-mode:vertical-rl">PASS</span></div></div>'; }
+  else if(f.shape==="diary"){ inner='<div style="display:flex;gap:5px;width:82%;height:80%"><div style="width:5px;height:100%;background:var(--card-text);opacity:.3;border-radius:2px"></div><div class="slot" style="flex:1;height:100%"></div></div>'; }
+  else{ inner='<div class="slot" style="width:70%;height:80%"></div>'; }
+  var extra="";
+  if(f.caption) extra += '<div class="cap"></div>';
+  if(f.tilt) extra += '<div class="tape"></div>';
+  return '<div class="prev"'+(f.tilt?' style="transform:rotate(-4deg)"':'')+'>'+inner+extra+'</div>';
+}
+
+function render(){
+  var c = CONTENT[state.theme];
+  var inner = document.getElementById('drawerInner');
+  var drawer = document.getElementById('drawer');
+  if(!state.tool){ drawer.classList.remove('open'); inner.innerHTML=""; return; }
+  drawer.classList.add('open');
+  var html = "";
+  if(state.tool==="upload"){
+    html += '<div class="drawer-head"><h3>Upload photos</h3><button data-close>✕</button></div>';
+    html += '<div class="upload-zone"><div class="lbl">Add your photos</div><div class="sub">Drag & drop, or</div><span class="choose">Choose Photos</span></div>';
+    html += '<div class="filetypes">JPG · PNG · WEBP</div>';
+    html += '<div class="drawer-head"><h3 style="font-size:12px">Recent</h3></div><div class="recent-row"><div class="rt"></div><div class="rt"></div><div class="rt"></div></div>';
+  } else if(state.tool==="frames"){
+    var allCats = {}; c.frames.forEach(function(f){ f.cats.forEach(function(cc){allCats[cc]=1;}); });
+    var catList = Object.keys(allCats);
+    if(!state.frameCat) state.frameCat="All";
+    html += '<div class="drawer-head"><h3>Frames</h3><button data-close>✕</button></div>';
+    html += '<div class="drawer-tabs" id="frTabs"><button data-frtab="All" class="'+(state.frameCat==="All"?"active":"")+'">All</button>';
+    catList.forEach(function(cc){ html += '<button data-frtab="'+cc+'" class="'+(state.frameCat===cc?"active":"")+'">'+cc+'</button>'; });
+    html += '</div><div class="drawer-grid">';
+    c.frames.filter(function(f){ return state.frameCat==="All" || f.cats.indexOf(state.frameCat)>-1; })
+      .forEach(function(f){ html += '<div class="g-card">'+frameShapeHTML(f)+'<label>'+f.name+'</label></div>'; });
+    html += '</div>';
+  } else if(state.tool==="backgrounds"){
+    html += '<div class="drawer-head"><h3>Backgrounds</h3><button data-close>✕</button></div>';
+    var bgCats = Object.keys(c.bg);
+    if(bgCats.indexOf(state.bgTab)===-1) state.bgTab = bgCats[0];
+    html += '<div class="drawer-tabs" id="bgTabs">';
+    bgCats.forEach(function(cat){ html += '<button data-bgtab="'+cat+'" class="'+(state.bgTab===cat?'active':'')+'">'+cat+'</button>'; });
+    html += '</div><div class="drawer-grid">';
+    c.bg[state.bgTab].forEach(function(name){ html += '<div class="g-card"><div class="prev"><div style="width:100%;height:100%;border-radius:8px;background:linear-gradient(120deg,var(--accent-strong),var(--card-bg))"></div></div><label>'+name+'</label></div>'; });
+    html += '</div><p style="font-size:10.5px;color:var(--card-text);opacity:.75;margin-top:14px;line-height:1.5">Frames = ready-made photo layouts. Backgrounds = a blank canvas you build on freely.</p>';
+  } else if(state.tool==="stickers"){
+    html += '<div class="drawer-head"><h3>Stickers</h3><button data-close>✕</button></div>';
+    html += '<p style="font-size:10.5px;color:var(--card-text);opacity:.75;margin:-6px 0 12px">One big '+WORLD_NAMES[state.theme]+' sticker collection — no folders to dig through.</p>';
+    html += '<input id="stickerSearch" class="text-area-demo" style="min-height:auto;padding:9px 12px" placeholder="Search stickers..." value="'+(state.stickerQuery||"")+'">';
+    html += '<div class="sticker-grid" id="stickerGrid" style="margin-top:12px">';
+    var q = (state.stickerQuery||"").toLowerCase();
+    var items = c.stickers.filter(function(s){ return !q || s[1].toLowerCase().indexOf(q)>-1; });
+    if(items.length===0) html += '<p style="grid-column:1/-1;font-size:11px;color:var(--card-text);opacity:.6">No stickers match "'+state.stickerQuery+'".</p>';
+    items.forEach(function(s){ html += '<div class="s-tile" title="'+s[1]+'"><div>'+s[0]+'</div><span class="lbl">'+s[1]+'</span></div>'; });
+    html += '</div>';
+  } else if(state.tool==="quotes"){
+    html += '<div class="drawer-head"><h3>Quote stickers</h3><button data-close>✕</button></div><div class="quote-list">';
+    QUOTES.forEach(function(q){ html += '<div class="q-chip" style="font-family:'+c.quotesFont+'">"'+q+'"</div>'; });
+    html += '</div>';
+  } else if(state.tool==="text"){
+    html += '<div class="drawer-head"><h3>Text</h3><button data-close>✕</button></div>';
+    html += '<div class="text-area-demo">Tap to add your own text…</div>';
+    html += '<div class="text-controls"><button>Bold</button><button>Italic</button><button>Left</button><button>Center</button><button>Right</button><button>Color</button><button>Opacity</button><button>Letter spacing</button></div>';
+    html += '<div class="drawer-head"><h3 style="font-size:12px">Font browser</h3></div><div class="font-list">';
+    FONTS.forEach(function(f){ var rec = c.fontRec.indexOf(f[1])>-1; html += '<div class="f-row" style="font-family:'+f[2]+';font-weight:'+f[3]+';font-style:'+f[4]+'"><span>'+f[0]+'</span>'+(rec?'<span class="star">★ recommended</span>':'<span style="opacity:.4;font-size:9px">'+f[1]+'</span>')+'</div>'; });
+    html += '</div>';
+  } else if(state.tool==="filters"){
+    html += '<div class="drawer-head"><h3>Filters</h3><button data-close>✕</button></div>';
+    html += '<p style="font-size:10.5px;color:var(--card-text);opacity:.75;margin:-6px 0 12px">'+WORLD_NAMES[state.theme]+'\'s own preset adjustments — not image files, just one-tap looks.</p>';
+    html += '<div class="filter-grid">';
+    WORLD_FILTERS[state.theme].forEach(function(f){ html += '<div class="g-card"><div class="filt-swatch" style="filter:'+f[1]+'"></div><label>'+f[0]+'</label></div>'; });
+    html += '</div>';
+  } else if(state.tool==="doodles"){
+    var dcats = Object.keys(DOODLE_CATS);
+    if(!state.doodleCat) state.doodleCat="All";
+    html += '<div class="drawer-head"><h3>Doodles</h3><button data-close>✕</button></div>';
+    html += '<div class="drawer-tabs" id="ddTabs"><button data-ddtab="All" class="'+(state.doodleCat==="All"?"active":"")+'">All</button>';
+    dcats.forEach(function(cat){ html += '<button data-ddtab="'+cat+'" class="'+(state.doodleCat===cat?'active':'')+'">'+cat+'</button>'; });
+    html += '</div><div class="doodle-grid">';
+    var dglyphs = state.doodleCat==="All" ? [].concat.apply([],Object.values(DOODLE_CATS)) : DOODLE_CATS[state.doodleCat];
+    dglyphs.forEach(function(g){ html += '<div class="d-tile">'+g+'</div>'; });
+    html += '</div>';
+  } else if(state.tool==="layers"){
+    html += '<div class="drawer-head"><h3>Layers</h3><button data-close>✕</button></div><div class="layer-stack">';
+    LAYER_STACK.forEach(function(l){ html += '<div class="layer-row"><span>'+l+'</span><span class="lctrl">'+
+      '<button title="Move up"><svg class="ic"><use href="#ic-resize"/></svg></button>'+
+      '<button title="Hide"><svg class="ic"><use href="#ic-eye"/></svg></button>'+
+      '<button title="Delete"><svg class="ic"><use href="#ic-trash"/></svg></button></span></div>'; });
+    html += '</div>';
+  }
+  inner.innerHTML = html;
+}
+
+document.getElementById('toolbar').addEventListener('click', function(e){
+  var btn = e.target.closest('.tool-btn');
+  if(!btn || !btn.dataset.tool || btn.disabled) return;
+  document.querySelectorAll('.tool-btn').forEach(function(b){ b.classList.remove('active'); });
+  if(state.tool === btn.dataset.tool){ state.tool = null; }
+  else { state.tool = btn.dataset.tool; btn.classList.add('active'); }
+  render();
+});
+
+document.getElementById('drawer').addEventListener('click', function(e){
+  if(e.target.matches('[data-close]')){ state.tool=null; document.querySelectorAll('.tool-btn').forEach(function(b){b.classList.remove('active');}); render(); return; }
+  if(e.target.matches('[data-bgtab]')){ state.bgTab = e.target.getAttribute('data-bgtab'); render(); return; }
+  if(e.target.matches('[data-frtab]')){ state.frameCat = e.target.getAttribute('data-frtab'); render(); return; }
+  if(e.target.matches('[data-ddtab]')){ state.doodleCat = e.target.getAttribute('data-ddtab'); render(); return; }
+});
+document.getElementById('drawer').addEventListener('input', function(e){
+  if(e.target.id==='stickerSearch'){
+    state.stickerQuery = e.target.value;
+    var grid = document.getElementById('stickerGrid');
+    var c = CONTENT[state.theme];
+    var q = state.stickerQuery.toLowerCase();
+    var items = c.stickers.filter(function(s){ return !q || s[1].toLowerCase().indexOf(q)>-1; });
+    grid.innerHTML = items.length===0
+      ? '<p style="grid-column:1/-1;font-size:11px;color:var(--card-text);opacity:.6">No stickers match "'+state.stickerQuery+'".</p>'
+      : items.map(function(s){ return '<div class="s-tile" title="'+s[1]+'"><div>'+s[0]+'</div><span class="lbl">'+s[1]+'</span></div>'; }).join('');
+  }
+});
+
+document.getElementById('switcher').addEventListener('click', function(e){
+  var btn = e.target.closest('button');
+  if(!btn) return;
+  var theme = btn.getAttribute('data-theme');
+  state.theme = theme; state.bgTab="Solid"; state.stickerQuery=""; state.frameCat=null; state.doodleCat=null;
+  document.body.setAttribute('data-theme', theme);
+  document.getElementById('worldName').textContent = WORLD_NAMES[theme];
+  document.querySelectorAll('#switcher button').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  render();
+});
+
+/* demo toggle: sample composition vs empty canvas */
+document.getElementById('demoToggle').addEventListener('click', function(e){
+  var btn = e.target.closest('button'); if(!btn) return;
+  state.demo = btn.getAttribute('data-demo');
+  document.querySelectorAll('#demoToggle button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  var empty = state.demo==="empty";
+  document.getElementById('emptyMsg').style.display = empty ? 'block' : 'none';
+  document.getElementById('sampleObjs').style.display = empty ? 'none' : 'block';
+  if(empty){ deselect(); }
+});
+
+/* object selection demo — works for the sample photo (full corner+side handles, crop enabled)
+   and the sample sticker (corner handles + rotation only, no crop) */
+state.selectedEl = null;
+function deselect(){
+  if(!state.selectedEl) return;
+  state.selectedEl.classList.remove('selected');
+  state.selectedEl.querySelectorAll('.sel-handle,.rot-line,.float-toolbar').forEach(function(el){el.remove();});
+  state.selectedEl = null;
+  document.getElementById('deleteBtn').disabled = true;
+}
+function select(el, opts){
+  if(state.selectedEl === el) return;
+  deselect();
+  state.selectedEl = el;
+  el.classList.add('selected');
+  var corners = ['tl','tr','bl','br'];
+  var positions = opts.sides ? corners.concat(['t','b','l','r']) : corners;
+  positions.forEach(function(pos){
+    var h=document.createElement('div'); h.className='sel-handle';
+    if(pos==='tl'){h.style.top='-6px';h.style.left='-6px';}
+    if(pos==='tr'){h.style.top='-6px';h.style.right='-6px';}
+    if(pos==='bl'){h.style.bottom='-6px';h.style.left='-6px';}
+    if(pos==='br'){h.style.bottom='-6px';h.style.right='-6px';}
+    if(pos==='t'){h.style.top='-6px';h.style.left='calc(50% - 5px)';}
+    if(pos==='b'){h.style.bottom='-6px';h.style.left='calc(50% - 5px)';}
+    if(pos==='l'){h.style.left='-6px';h.style.top='calc(50% - 5px)';}
+    if(pos==='r'){h.style.right='-6px';h.style.top='calc(50% - 5px)';}
+    el.appendChild(h);
+  });
+  var line=document.createElement('div'); line.className='rot-line'; el.appendChild(line);
+  var rh=document.createElement('div'); rh.className='sel-handle rot'; el.appendChild(rh);
+  var ft=document.createElement('div'); ft.className='float-toolbar';
+  var tools = opts.crop ? ['move','rotate','crop','resize','duplicate','forward','backward','trash'] : ['move','rotate','resize','duplicate','forward','backward','trash'];
+  ft.innerHTML = tools.map(function(ic){ return '<button title="'+ic+'"><svg class="ic"><use href="#ic-'+ic+'"/></svg></button>'; }).join('');
+  el.appendChild(ft);
+  document.getElementById('deleteBtn').disabled = false;
+}
+document.getElementById('samplePhoto').addEventListener('click', function(e){
+  e.stopPropagation();
+  if(state.selectedEl===this){ deselect(); } else { select(this, {sides:true, crop:true}); }
+});
+document.querySelector('.c-sticker').addEventListener('click', function(e){
+  e.stopPropagation();
+  if(state.selectedEl===this){ deselect(); } else { select(this, {sides:false, crop:false}); }
+});
+document.getElementById('canvasFrame').addEventListener('click', function(){ deselect(); });
+document.getElementById('deleteBtn').addEventListener('click', function(){ deselect(); });
+
+/* export modal */
+document.getElementById('exportBtn').addEventListener('click', function(){ document.getElementById('exportModal').classList.add('open'); });
+document.getElementById('previewExportBtn').addEventListener('click', function(){ document.getElementById('exportModal').classList.add('open'); });
+document.getElementById('modalClose').addEventListener('click', function(){ document.getElementById('exportModal').classList.remove('open'); });
+document.getElementById('exportModal').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
+document.getElementById('formatSeg').addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b)return; this.querySelectorAll('button').forEach(function(x){x.classList.remove('active');}); b.classList.add('active'); });
+document.getElementById('qualitySeg').addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b)return; this.querySelectorAll('button').forEach(function(x){x.classList.remove('active');}); b.classList.add('active'); });
+
+/* preview mode */
+document.getElementById('previewBtn').addEventListener('click', function(){ document.body.classList.add('preview'); });
+document.getElementById('backToEdit').addEventListener('click', function(){ document.body.classList.remove('preview'); });
+</script>
+</body>
+</html>

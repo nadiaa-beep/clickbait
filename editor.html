@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f7eff5">
+  <title>CLICKBAIT — Editor</title>
+  <link rel="stylesheet" href="css/font-local.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/editor.css">
+  <link rel="stylesheet" href="css/editor-themes.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/editor-overrides.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script type="module" src="js/editor.js"></script>
+</head>
+<body class="editor-page" data-theme="pastel">
+  <header class="topbar">
+    <a class="brand" href="index.html"><b>CLICKBAIT</b><span id="worldName">Pastel Kawaii</span></a>
+    <div class="tb-group"><button class="icon-btn" id="undoBtn" title="Undo" aria-label="Undo">↶</button><button class="icon-btn" id="redoBtn" title="Redo" aria-label="Redo" disabled>↷</button></div>
+    <div class="top-spacer"></div><span id="saveState" class="save-state">Session only</span>
+    <button class="pill-btn" id="previewBtn">◉ Preview</button><button class="pill-btn primary" id="exportBtn">⇩ Export</button>
+  </header>
+  <nav class="world-switcher" id="switcher" aria-label="Choose aesthetic world"></nav>
+  <main class="editor-shell">
+    <aside class="toolbar" id="toolbar" aria-label="Editor tools">
+      <button class="tool-btn" data-action="upload" title="Upload photos"><span>↑</span><small>Upload</small></button>
+      <button class="tool-btn" data-action="rotate" title="Rotate selected object"><span>⟳</span><small>Rotate</small></button>
+      <button class="tool-btn" data-action="crop" title="Crop selected photo"><span>⌗</span><small>Crop</small></button>
+      <button class="tool-btn" data-tool="stickers"><span>✦</span><small>Stickers</small></button>
+      <button class="tool-btn" data-action="uploadSticker"><span>＋</span><small>My Sticker</small></button>
+      <button class="tool-btn" data-tool="backgrounds"><span>◒</span><small>Background</small></button>
+      <button class="tool-btn" data-tool="frames"><span>▣</span><small>Frames</small></button>
+      <button class="tool-btn" data-tool="quotes"><span>❞</span><small>Quotes</small></button>
+      <button class="tool-btn" data-tool="text"><span>T</span><small>Text</small></button>
+      <button class="tool-btn" data-tool="fonts"><span>𝑓</span><small>Fonts</small></button>
+      <button class="tool-btn" data-tool="filters"><span>☷</span><small>Filters</small></button>
+      <button class="tool-btn" data-action="doodles"><span>✎</span><small>Doodles</small></button>
+      <button class="tool-btn" data-tool="layers"><span>▱</span><small>Layers</small></button>
+      <button class="tool-btn" data-action="delete" id="deleteBtn" disabled><span>⌫</span><small>Delete</small></button>
+    </aside>
+    <section class="drawer" id="drawer" aria-label="Asset inventory"><div class="drawer-inner" id="drawerInner"></div></section>
+    <section class="workspace" id="workspace">
+      <div class="canvas-toolbar"><button id="whiteCanvasBtn">White canvas</button><button id="emptyCanvasBtn">Clear canvas</button><span id="canvasStatus" aria-live="polite">Choose a tool or upload a photo ✧</span></div>
+      <div class="canvas-stage" id="canvasStage"><div class="canvas-paper" id="canvasPaper"><canvas id="designCanvas" width="900" height="650"></canvas></div></div>
+    </section>
+    <aside class="properties" id="properties"><div class="panel-title"><span>YOUR CANVAS</span><b>♡</b></div><div id="selectionPanel"><p class="panel-hint">Select something on your canvas to see its details.</p></div><div class="layer-mini"><div class="panel-title"><span>LAYERS</span><button id="openLayers" title="Open layers">↗</button></div><div id="layerMiniList"></div></div></aside>
+  </main>
+  <input id="photoInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+  <input id="stickerInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
+  <div class="modal-overlay" id="cropModal" hidden><div class="modal-card crop-card"><button class="modal-close" data-close-crop aria-label="Cancel crop">×</button><h3>Crop your photo</h3><p>Drag any crop edge or corner to adjust the selected area. Your original stays available through Undo.</p><div class="crop-preview"><canvas id="cropCanvas"></canvas><div class="crop-box" id="cropBox"><i class="crop-handle n" data-crop-handle="n"></i><i class="crop-handle ne" data-crop-handle="ne"></i><i class="crop-handle e" data-crop-handle="e"></i><i class="crop-handle se" data-crop-handle="se"></i><i class="crop-handle s" data-crop-handle="s"></i><i class="crop-handle sw" data-crop-handle="sw"></i><i class="crop-handle w" data-crop-handle="w"></i><i class="crop-handle nw" data-crop-handle="nw"></i></div></div><div class="modal-actions"><button class="pill-btn" data-close-crop>Cancel</button><button class="pill-btn primary" id="applyCrop">Apply crop</button></div></div></div>
+  <div class="modal-overlay" id="exportModal" hidden><div class="modal-card"><button class="modal-close" data-close-export aria-label="Close export">×</button><h3>Export your creation ♡</h3><p>Save your design straight to your device — no account needed.</p><div class="export-options"><label>Format <select id="exportFormat"><option value="png">PNG</option><option value="jpeg">JPG</option></select></label><label>Quality <select id="exportQuality"><option value="1">Standard</option><option value="2">High</option><option value="3">Print</option></select></label></div><button class="download-btn" id="downloadBtn">⇩ Download Image</button></div></div>
+  <div class="preview-overlay" id="previewOverlay" hidden><button class="pill-btn" id="backToEdit">← Back to Edit</button><div id="previewMount"></div><button class="pill-btn primary" id="previewExportBtn">⇩ Export</button></div>
+</body>
+</html>
